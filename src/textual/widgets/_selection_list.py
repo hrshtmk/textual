@@ -575,6 +575,12 @@ class SelectionList(Generic[SelectionType], OptionList):
             event: The event to capture and recreate.
         """
         event.stop()
+        # Check bounding to prevent OptionDoesNotExist exception.
+        if event.option_index is not None:
+            try:
+                self.get_option_at_index(event.option_index)
+            except OptionDoesNotExist:
+                return
         self.post_message(self.SelectionHighlighted(self, event.option_index))
 
     def _on_option_list_option_selected(self, event: OptionList.OptionSelected) -> None:
